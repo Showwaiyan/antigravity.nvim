@@ -7,9 +7,14 @@ function M.ask(default, use_range)
   local context = require("antigravity.context").new(use_range)
   local ask_opts = require("antigravity.config").opts.ask or {}
 
+  local default_val = default
+  if not default_val or default_val == "" then
+    default_val = "@this "
+  end
+
   vim.ui.input({
     prompt = ask_opts.prompt or "Ask Antigravity: ",
-    default = default or "",
+    default = default_val,
   }, function(input)
     context:clear()
 
@@ -18,7 +23,13 @@ function M.ask(default, use_range)
       return
     end
 
-    local rendered = context:render(input)
+    local query = input
+    -- Auto-prepend @this if a selection range is active and no context placeholder is used
+    if use_range and not query:find("@this", 1, true) and not query:find("@buffer", 1, true) and not query:find("@buffers", 1, true) then
+      query = "@this " .. query
+    end
+
+    local rendered = context:render(query)
     -- Launch agy interactively with the rendered prompt
     require("antigravity.terminal").open({ "-i", "--prompt", rendered })
   end)

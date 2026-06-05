@@ -60,7 +60,7 @@ function M.open(args)
           end
         end
         if prompt_val then
-          vim.api.nvim_chan_send(job_id, prompt_val .. "\n")
+          vim.api.nvim_chan_send(job_id, prompt_val .. "\r")
         end
       end
       return
