@@ -2,8 +2,9 @@ local M = {}
 
 ---Prompt the user to ask Antigravity a custom question with editor context.
 ---@param default? string Optional default text to fill the input with.
-function M.ask(default)
-  local context = require("antigravity.context").new()
+---@param use_range? boolean Whether to capture visual selection range.
+function M.ask(default, use_range)
+  local context = require("antigravity.context").new(use_range)
   local ask_opts = require("antigravity.config").opts.ask or {}
 
   vim.ui.input({
@@ -24,8 +25,9 @@ function M.ask(default)
 end
 
 ---Select a predefined prompt to send to Antigravity.
-function M.select()
-  local context = require("antigravity.context").new()
+---@param use_range? boolean Whether to capture visual selection range.
+function M.select(use_range)
+  local context = require("antigravity.context").new(use_range)
   local select_opts = require("antigravity.config").opts.select or {}
   local prompts = select_opts.prompts or {}
 

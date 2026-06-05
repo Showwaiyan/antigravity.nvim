@@ -12,9 +12,13 @@ local ns_id = vim.api.nvim_create_namespace("AntigravityContext")
 
 ---Get visual selection range
 ---@param buf integer
+---@param force_visual? boolean
 ---@return table|nil
-local function selection(buf)
+local function selection(buf, force_visual)
   local mode = vim.fn.mode()
+  if force_visual and (mode == "n" or mode == "nt") then
+    mode = vim.fn.visualmode()
+  end
   local kind = (mode == "V" and "line") or (mode == "v" and "char") or (mode == "\22" and "block")
   if not kind then
     return nil
@@ -27,6 +31,10 @@ local function selection(buf)
 
   local from = vim.api.nvim_buf_get_mark(buf, "<")
   local to = vim.api.nvim_buf_get_mark(buf, ">")
+  if from[1] == 0 or to[1] == 0 then
+    return nil
+  end
+
   if from[1] > to[1] or (from[1] == to[1] and from[2] > to[2]) then
     from, to = to, from
   end
@@ -79,14 +87,14 @@ local function highlight(buf, range)
 end
 
 ---Create a new Context
----@param range? table
+---@param use_range? boolean
 ---@return AntigravityContext
-function Context.new(range)
+function Context.new(use_range)
   local self = setmetatable({}, Context)
   self.win = vim.api.nvim_get_current_win()
   self.buf = vim.api.nvim_get_current_buf()
   self.cursor = vim.api.nvim_win_get_cursor(self.win)
-  self.range = range or selection(self.buf)
+  self.range = selection(self.buf, use_range)
 
   if self.range then
     highlight(self.buf, self.range)

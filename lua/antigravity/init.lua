@@ -8,13 +8,15 @@ end
 
 ---Prompt the user to ask a question with editor context
 ---@param default? string
-function M.ask(default)
-  require("antigravity.ui").ask(default)
+---@param use_range? boolean
+function M.ask(default, use_range)
+  require("antigravity.ui").ask(default, use_range)
 end
 
 ---Select from predefined prompts
-function M.select()
-  require("antigravity.ui").select()
+---@param use_range? boolean
+function M.select(use_range)
+  require("antigravity.ui").select(use_range)
 end
 
 ---Toggle the Antigravity CLI terminal split

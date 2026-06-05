@@ -9,15 +9,15 @@ vim.api.nvim_create_user_command("AntigravityAsk", function(opts)
   if default_text == "" then
     default_text = nil
   end
-  require("antigravity").ask(default_text)
+  require("antigravity").ask(default_text, opts.range > 0)
 end, {
   nargs = "?",
   range = true,
   desc = "Ask Antigravity a question with editor context",
 })
 
-vim.api.nvim_create_user_command("AntigravitySelect", function()
-  require("antigravity").select()
+vim.api.nvim_create_user_command("AntigravitySelect", function(opts)
+  require("antigravity").select(opts.range > 0)
 end, {
   range = true,
   desc = "Select and run a predefined Antigravity prompt",

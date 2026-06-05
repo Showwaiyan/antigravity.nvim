@@ -67,7 +67,11 @@ function M.open(args)
   -- Run termopen
   job_id = vim.fn.termopen(cmd, {
     on_exit = function(_, exit_code, _)
-      M.close()
+      if exit_code ~= 0 then
+        vim.notify("Antigravity process exited with code " .. exit_code, vim.log.levels.ERROR)
+      else
+        M.close()
+      end
     end
   })
 
