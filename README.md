@@ -42,6 +42,7 @@ Install using your preferred package manager (e.g. `lazy.nvim`):
     require("antigravity").setup({
       -- Optional configuration overrides
       cmd = "agy",
+      disable_links = false, -- Set to true to disable clickable markdown/file:// links and use plain text names
       ask = {
         split = "right", -- "right", "left", "above", "below"
         width = 0.4,     -- fractional width (40%) or absolute column count

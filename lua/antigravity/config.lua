@@ -2,6 +2,7 @@ local M = {}
 
 ---@class AntigravityOpts
 ---@field cmd? string The command to invoke the Antigravity CLI (defaults to "agy").
+---@field disable_links? boolean Whether to instruct the model to use plain text instead of clickable markdown links.
 ---@field contexts? table<string, fun(context: AntigravityContext): string|nil> Context functions.
 ---@field ask? { prompt?: string, split?: string, width?: number, height?: number } Ask options.
 ---@field select? { prompt?: string, prompts?: table<string, string> } Predefined prompt select options.
@@ -9,6 +10,7 @@ local M = {}
 ---@type AntigravityOpts
 local defaults = {
   cmd = "agy",
+  disable_links = false,
   contexts = {
     ["@this"] = function(ctx) return ctx:this() end,
     ["@buffer"] = function(ctx) return ctx:buffer() end,

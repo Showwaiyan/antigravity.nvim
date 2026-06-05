@@ -30,6 +30,9 @@ function M.ask(default, use_range)
     end
 
     local rendered = context:render(query)
+    if require("antigravity.config").opts.disable_links then
+      rendered = rendered .. "\n(IMPORTANT: Do not generate markdown links or file:// URIs. Just output plain text names of files, classes, methods, and functions.)"
+    end
     -- Launch agy interactively with the rendered prompt
     require("antigravity.terminal").open({ "-i", "--prompt", rendered })
   end)
@@ -65,6 +68,9 @@ function M.select(use_range)
 
     if selected_prompt then
       local rendered = context:render(selected_prompt)
+      if require("antigravity.config").opts.disable_links then
+        rendered = rendered .. "\n(IMPORTANT: Do not generate markdown links or file:// URIs. Just output plain text names of files, classes, methods, and functions.)"
+      end
       require("antigravity.terminal").open({ "-i", "--prompt", rendered })
     end
   end)
