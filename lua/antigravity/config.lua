@@ -10,7 +10,7 @@ local M = {}
 ---@type AntigravityOpts
 local defaults = {
   cmd = "agy",
-  disable_links = false,
+  disable_links = true,
   contexts = {
     ["@this"] = function(ctx) return ctx:this() end,
     ["@buffer"] = function(ctx) return ctx:buffer() end,
