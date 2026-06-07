@@ -73,11 +73,7 @@ function M.open(args)
   -- Build cmd array
   local base_cmd = require("antigravity.config").opts.cmd or "agy"
   local cmd = { base_cmd }
-  local final_args = args or {}
-  if #final_args == 0 and require("antigravity.config").opts.disable_links then
-    final_args = { "-i", "--prompt", "(IMPORTANT: Do not generate markdown links or file:// URIs. Just output plain text names of files, classes, methods, and functions.)" }
-  end
-  for _, arg in ipairs(final_args) do
+  for _, arg in ipairs(args or {}) do
     table.insert(cmd, arg)
   end
 
