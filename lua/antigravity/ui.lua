@@ -1,5 +1,90 @@
 local M = {}
 
+local function float_input(opts, on_confirm)
+  local prompt = opts.prompt or " Ask Antigravity: "
+  local default = opts.default or ""
+
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.bo[buf].buftype = "nofile"
+  vim.bo[buf].bufhidden = "wipe"
+  vim.bo[buf].swapfile = false
+
+  local max_width = 80
+  local width = math.min(max_width, vim.o.columns - 4)
+  if width < 20 then width = 20 end
+
+  local height = 1
+  local row = math.floor((vim.o.lines - height) / 2) - 1
+  if row < 0 then row = 0 end
+  local col = math.floor((vim.o.columns - width) / 2)
+  if col < 0 then col = 0 end
+
+  local win_opts = {
+    relative = "editor",
+    width = width,
+    height = height,
+    row = row,
+    col = col,
+    style = "minimal",
+    border = "rounded",
+  }
+  if vim.fn.has("nvim-0.9") == 1 then
+    win_opts.title = " " .. vim.trim(prompt) .. " "
+    win_opts.title_pos = "center"
+  end
+
+  local win = vim.api.nvim_open_win(buf, true, win_opts)
+
+  vim.wo[win].winhl = "Normal:NormalFloat,FloatBorder:FloatBorder"
+
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, { default })
+  vim.api.nvim_win_set_cursor(win, { 1, #default })
+
+  vim.cmd("startinsert")
+
+  local closed = false
+  local function close(submit_val)
+    if closed then return end
+    closed = true
+
+    if vim.fn.mode():sub(1, 1) == "i" then
+      vim.cmd("stopinsert")
+    end
+
+    if vim.api.nvim_win_is_valid(win) then
+      vim.api.nvim_win_close(win, true)
+    end
+
+    on_confirm(submit_val)
+  end
+
+  local map_opts = { buffer = buf, silent = true }
+
+  vim.keymap.set({ "n", "i" }, "<CR>", function()
+    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+    close(lines[1] or "")
+  end, map_opts)
+
+  vim.keymap.set("n", "<Esc>", function()
+    close(nil)
+  end, map_opts)
+
+  vim.keymap.set("n", "q", function()
+    close(nil)
+  end, map_opts)
+
+  vim.keymap.set({ "n", "i" }, "<C-c>", function()
+    close(nil)
+  end, map_opts)
+
+  vim.api.nvim_create_autocmd({ "BufLeave", "WinLeave" }, {
+    buffer = buf,
+    callback = function()
+      close(nil)
+    end,
+  })
+end
+
 ---Prompt the user to ask Antigravity a custom question with editor context.
 ---@param default? string Optional default text to fill the input with.
 ---@param use_range? boolean Whether to capture visual selection range.
@@ -12,7 +97,7 @@ function M.ask(default, use_range)
     default_val = "@this "
   end
 
-  vim.ui.input({
+  float_input({
     prompt = ask_opts.prompt or "Ask Antigravity: ",
     default = default_val,
   }, function(input)
