@@ -36,6 +36,8 @@ local function float_input(opts, on_confirm)
   local win = vim.api.nvim_open_win(buf, true, win_opts)
 
   vim.wo[win].winhl = "Normal:NormalFloat,FloatBorder:FloatBorder"
+  vim.wo[win].wrap = false
+  vim.wo[win].sidescrolloff = 8
 
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, { default })
   vim.api.nvim_win_set_cursor(win, { 1, #default })
