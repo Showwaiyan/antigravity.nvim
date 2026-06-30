@@ -42,7 +42,7 @@ local function float_input(opts, on_confirm)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, { default })
   vim.api.nvim_win_set_cursor(win, { 1, #default })
 
-  vim.cmd("startinsert")
+  vim.cmd("startinsert!")
 
   local closed = false
   local function close(submit_val)
